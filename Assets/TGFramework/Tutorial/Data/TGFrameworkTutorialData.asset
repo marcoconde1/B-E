@@ -1,0 +1,272 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e0617e587714422d97e38e581b16a10, type: 3}
+  m_Name: TGFrameworkTutorialData
+  m_EditorClassIdentifier: Assembly-CSharp::TGFramework.TutorialData
+  frameworkName: TGFramework
+  version: 1.0.0
+  description: TGFramework Tutorial
+  modules:
+  - moduleName: ServiceLocator
+    description: "Sistema de registro y obtenci\xF3n de servicios globales"
+    icon: {fileID: 0}
+    overview: "El ServiceLocator es un patr\xF3n de dise\xF1o que permite registrar
+      y obtener servicios de forma global sin necesidad de pasar referencias manualmente.
+      Es \xFAtil para sistemas como AudioSystem, GameManager, etc.\n\nCaracter\xEDsticas
+      principales:\n\u2022 Registro simple de servicios\n\u2022 Obtenci\xF3n type-safe\n\u2022
+      M\xE9todo TryGet para servicios opcionales"
+    quickStart: "1. Registra tu servicio:\n   ServiceLocator.Register<MyService>(myServiceInstance);\n\n2.
+      Obt\xE9n el servicio desde cualquier lugar:\n   var service = ServiceLocator.Get<MyService>();\n\n3.
+      Para servicios opcionales:\n   var service = ServiceLocator.TryGet<MyService>();"
+    codeExamples:
+    - title: "Registro B\xE1sico"
+      code: "// En el Awake o Start de tu MonoBehaviour\npublic class GameManager
+        : MonoBehaviour\n{\n    private void Awake()\n    {\n        ServiceLocator.Register<GameManager>(this);\n   
+        }\n}"
+      explanation: Registra el GameManager como servicio global al iniciar.
+    - title: "Obtenci\xF3n de Servicio"
+      code: "// Desde cualquier script\npublic class PlayerController : MonoBehaviour\n{\n   
+        private void Start()\n    {\n        var gameManager = ServiceLocator.Get<GameManager>();\n       
+        gameManager.DoSomething();\n    }\n}"
+      explanation: Obtiene el GameManager registrado y lo usa.
+    - title: Servicio Opcional
+      code: "// Usa TryGet para servicios que pueden no existir\nvar audioSystem
+        = ServiceLocator.TryGet<AudioSystem>();\nif (audioSystem != null)\n{\n   
+        audioSystem.PlayMusic(\"background\");\n}"
+      explanation: "TryGet retorna null si el servicio no est\xE1 registrado, evitando
+        excepciones."
+    features:
+    - Registro simple con Register<T>()
+    - "Obtenci\xF3n type-safe con Get<T>()"
+    - "M\xE9todo TryGet<T>() para servicios opcionales"
+    - No requiere referencias manuales
+    - "\xDAtil para sistemas singleton"
+    relatedModules:
+    - DependencyInjector
+    - AudioSystem
+  - moduleName: AudioSystem
+    description: "Sistema completo de gesti\xF3n de audio con m\xFAsica y efectos
+      de sonido"
+    icon: {fileID: 0}
+    overview: "AudioSystem es un sistema robusto para manejar m\xFAsica y efectos
+      de sonido en tu juego. Incluye caracter\xEDsticas avanzadas como:\n\n\u2022
+      Pooling de AudioSources para SFX\n\u2022 Fade in/out para m\xFAsica\n\u2022
+      Sistema de base de datos de audio con ScriptableObject\n\u2022 Vol\xFAmenes
+      separados para m\xFAsica y SFX\n\u2022 Persistencia de vol\xFAmenes con PlayerPrefs"
+    quickStart: "1. Crea un AudioClipDataModel (ScriptableObject)\n2. Agrega tus
+      clips de audio con keys \xFAnicas\n3. Usa AudioSystem.PlayMusic(\"key\") para
+      m\xFAsica\n4. Usa AudioSystem.PlaySFX(\"key\") para efectos"
+    codeExamples:
+    - title: "Reproducir M\xFAsica"
+      code: "// Reproducir m\xFAsica sin fade\nAudioSystem.PlayMusic(\"background_music\");\n\n//
+        Reproducir m\xFAsica con fade in\nAudioSystem.PlayMusic(\"background_music\",
+        fadeDuration: 2f);"
+      explanation: "Reproduce m\xFAsica de fondo. El fadeDuration es opcional."
+    - title: Reproducir Efectos de Sonido
+      code: '// Reproducir un SFX
+
+        AudioSystem.PlaySFX("jump");
+
+
+        //
+        Reproducir un SFX aleatorio
+
+        AudioSystem.PlayRandomSFX("jump1", "jump2",
+        "jump3");
+
+
+        // Reproducir SFX secuencialmente
+
+        AudioSystem.PlaySequentialSFX("step1",
+        "step2", "step3");'
+      explanation: "M\xFAltiples formas de reproducir efectos de sonido."
+    - title: Control de Volumen
+      code: "// Ajustar volumen de m\xFAsica\nAudioSystem.SetMusicVolume(0.5f);\n\n//
+        Ajustar volumen de SFX\nAudioSystem.SetSFXVolume(0.7f);\n\n// Obtener vol\xFAmenes
+        actuales\nfloat musicVol = AudioSystem.Instance.MusicVolume;\nfloat sfxVol
+        = AudioSystem.Instance.SfxVolume;"
+      explanation: "Los vol\xFAmenes se guardan autom\xE1ticamente en PlayerPrefs."
+    - title: "Detener M\xFAsica"
+      code: '// Detener inmediatamente
+
+        AudioSystem.StopMusic();
+
+
+        //
+        Detener con fade out
+
+        AudioSystem.StopMusic(fadeDuration: 1.5f);'
+      explanation: "Detiene la m\xFAsica actual, con o sin fade out."
+    features:
+    - "Pooling autom\xE1tico de AudioSources"
+    - "Fade in/out para m\xFAsica"
+    - Sistema de base de datos con ScriptableObject
+    - "Vol\xFAmenes separados (m\xFAsica/SFX)"
+    - "Persistencia de configuraci\xF3n"
+    - "Reproducci\xF3n aleatoria y secuencial de SFX"
+    relatedModules:
+    - ServiceLocator
+  - moduleName: DependencyInjector
+    description: "Sistema de inyecci\xF3n de dependencias usando atributos"
+    icon: {fileID: 0}
+    overview: "El DependencyInjector permite inyectar dependencias autom\xE1ticamente
+      en campos y propiedades marcados con el atributo [Inject]. Esto reduce el acoplamiento
+      y facilita el testing.\n\nC\xF3mo funciona:\n\u2022 Marca campos/propiedades
+      con [Inject]\n\u2022 Llama a DependencyInjector.InjectDependencies()\n\u2022
+      Las dependencias se inyectan autom\xE1ticamente"
+    quickStart: "1. Marca tus campos con [Inject]\n2. Llama DependencyInjector.InjectDependencies(this,
+      dependencies...)\n3. Las dependencias se inyectan autom\xE1ticamente"
+    codeExamples:
+    - title: "Inyecci\xF3n B\xE1sica"
+      code: "public class PlayerController : MonoBehaviour\n{\n    [Inject] private
+        AudioSystem _audioSystem;\n    [Inject] private GameManager _gameManager;\n   
+        \n    private void Start()\n    {\n        var audioSystem = ServiceLocator.Get<AudioSystem>();\n       
+        var gameManager = ServiceLocator.Get<GameManager>();\n        \n        DependencyInjector.InjectDependencies(this,
+        audioSystem, gameManager);\n    }\n}"
+      explanation: "Los campos marcados con [Inject] se llenan autom\xE1ticamente."
+    - title: "Inyecci\xF3n en Propiedades"
+      code: "public class WeaponSystem\n{\n    [Inject] private AudioSystem AudioSystem
+        { get; set; }\n    \n    public void Fire()\n    {\n        AudioSystem.PlaySFX(\"gunshot\");\n   
+        }\n}"
+      explanation: "Tambi\xE9n funciona con propiedades privadas."
+    features:
+    - "Inyecci\xF3n autom\xE1tica de dependencias"
+    - Soporte para campos y propiedades
+    - 'Usa atributos [Inject]'
+    - Reduce acoplamiento
+    - Facilita testing
+    relatedModules:
+    - ServiceLocator
+  - moduleName: TGDebug
+    description: Sistema de debug que solo funciona en el editor
+    icon: {fileID: 0}
+    overview: "TGDebug es un wrapper sobre Unity's Debug que solo compila en el editor.
+      Esto significa que todos los logs se eliminan autom\xE1ticamente en builds
+      finales, mejorando el rendimiento.\n\nVentajas:\n\u2022 No afecta el rendimiento
+      en builds\n\u2022 Misma API que Debug de Unity\n\u2022 Compilaci\xF3n condicional
+      autom\xE1tica"
+    quickStart: 'Usa TGDebug igual que Debug.Log:
+
+      TGDebug.Log("Mensaje");
+
+      TGDebug.LogWarning("Advertencia");
+
+      TGDebug.LogError("Error");'
+    codeExamples:
+    - title: "Uso B\xE1sico"
+      code: "// Log normal\nTGDebug.Log(\"Jugador inici\xF3 sesi\xF3n\");\n\n// Log
+        con contexto\nTGDebug.Log(\"Error en objeto\", gameObject);\n\n// Warnings
+        y Errors\nTGDebug.LogWarning(\"Valor fuera de rango\");\nTGDebug.LogError(\"Error
+        cr\xEDtico\");"
+      explanation: Misma API que Debug, pero solo compila en editor.
+    - title: Log de Excepciones
+      code: "try\n{\n    // c\xF3digo que puede fallar\n}\ncatch (System.Exception
+        e)\n{\n    TGDebug.LogException(e);\n    TGDebug.LogException(e, this); //
+        con contexto\n}"
+      explanation: "Tambi\xE9n soporta logging de excepciones."
+    features:
+    - Solo compila en editor
+    - "Eliminado autom\xE1ticamente en builds"
+    - Misma API que Debug de Unity
+    - "Mejora el rendimiento en producci\xF3n"
+    relatedModules: []
+  - moduleName: GameDesignTool
+    description: "Herramienta para dise\xF1adores: gesti\xF3n de configuraciones"
+    icon: {fileID: 0}
+    overview: "GameDesignTool permite crear ScriptableObjects marcados con [DesignerConfig]
+      que aparecen autom\xE1ticamente en una ventana de editor. Esto permite a los
+      dise\xF1adores modificar configuraciones sin tocar c\xF3digo.\n\nC\xF3mo usarlo:\n1.
+      Crea un ScriptableObject\n2. M\xE1rcalo con [DesignerConfig]\n3. \xC1brelo
+      desde Tools/Designer Config Tool"
+    quickStart: "1. Crea un ScriptableObject y m\xE1rcalo con [DesignerConfig]\n2.
+      Abre Tools/Designer Config Tool\n3. Edita tus configuraciones"
+    codeExamples:
+    - title: "Crear Configuraci\xF3n de Dise\xF1ador"
+      code: "[DesignerConfig]\n[CreateAssetMenu(menuName = \"Game/Config/EnemyConfig\")]\npublic
+        class EnemyConfig : ScriptableObject\n{\n    public float health = 100f;\n   
+        public float speed = 5f;\n    public int damage = 10;\n}"
+      explanation: Cualquier ScriptableObject con [DesignerConfig] aparece en la
+        herramienta.
+    features:
+    - Ventana de editor dedicada
+    - "Acceso f\xE1cil para dise\xF1adores"
+    - "No requiere c\xF3digo para editar"
+    - "Organizaci\xF3n autom\xE1tica"
+    relatedModules: []
+  - moduleName: ProjectSetup
+    description: Herramienta para configurar el proyecto inicial
+    icon: {fileID: 0}
+    overview: "ProjectSetup es una ventana de editor que facilita la configuraci\xF3n
+      inicial del proyecto. Permite:\n\n\u2022 Instalar paquetes esenciales\n\u2022
+      Importar assets necesarios\n\u2022 Crear estructura de carpetas base"
+    quickStart: '1. Abre TGFramework/Project Setup/Essential Assets & Packages
+
+      2.
+      Selecciona lo que necesitas
+
+      3. Haz clic en Import Selected'
+    codeExamples:
+    - title: Crear Estructura de Carpetas
+      code: "// Desde el men\xFA:\n// TGFramework/Project Setup/Create Base Folders\n\n//
+        Esto crea:\n// Game/\n//   - Animations\n//   - Data\n//   - Fonts\n//  
+        - Prefabs\n//   - Scenes\n//   - Scripts\n//   - Sprites\n//   - Settings"
+      explanation: "Crea autom\xE1ticamente la estructura de carpetas base del proyecto."
+    features:
+    - "Instalaci\xF3n de paquetes"
+    - "Importaci\xF3n de assets"
+    - "Creaci\xF3n de estructura de carpetas"
+    - "Configuraci\xF3n inicial r\xE1pida"
+    relatedModules: []
+  - moduleName: PlayerPrefs Editor
+    description: Ventana de editor para visualizar y modificar PlayerPrefs
+    icon: {fileID: 0}
+    overview: "PlayerPrefs Editor es una herramienta de editor que te permite ver,
+      crear, editar y borrar claves de PlayerPrefs sin escribir c\xF3digo adicional.\n\nUso
+      t\xEDpico:\n\u2022 Depurar valores de progreso, opciones o datos de usuario\n\u2022
+      Ajustar valores en caliente sin recompilar\n\u2022 Limpiar PlayerPrefs durante
+      el desarrollo"
+    quickStart: "1. Abre el men\xFA TGFramework/PlayerPrefs Editor.\n2. Usa el bot\xF3n
+      \"Load\" para leer los valores actuales de PlayerPrefs.\n3. Crea nuevas claves
+      desde la secci\xF3n \"Add new key\".\n4. Edita los valores directamente en
+      la tabla.\n5. Pulsa \"Save\" para guardar los cambios en PlayerPrefs.\n6. Opcional:
+      usa \"Delete All\" para limpiar todas las claves."
+    codeExamples:
+    - title: "Guardar una opci\xF3n de volumen"
+      code: "// Guardar volumen de m\xFAsica\nPlayerPrefs.SetFloat(\"audio_music_volume\",
+        0.8f);\nPlayerPrefs.Save();\n\n// PlayerPrefs Editor mostrar\xE1 la key \"audio_music_volume\"
+        y su valor."
+      explanation: Cualquier clave que guardes con PlayerPrefs se puede inspeccionar
+        y modificar desde PlayerPrefs Editor.
+    - title: Guardar progreso del jugador
+      code: '// Guardar nivel alcanzado
+
+        PlayerPrefs.SetInt("player_level",
+        5);
+
+        PlayerPrefs.Save();
+
+
+        // Luego abre TGFramework/PlayerPrefs
+        Editor para verificar o editar el valor.'
+      explanation: Ideal para depurar progreso, monedas, experiencia, etc.
+    features:
+    - "Listado de claves con b\xFAsqueda"
+    - Crear, editar y borrar claves
+    - Importar claves existentes desde el sistema (editor)
+    - Persistencia de la lista de claves en EditorPrefs
+    - "Bot\xF3n para borrar todos los PlayerPrefs"
+    relatedModules:
+    - AudioSystem
+    - ProjectSetup
+  primaryColor: {r: 0.2, g: 0.6, b: 1, a: 1}
+  secondaryColor: {r: 0.3, g: 0.3, b: 0.3, a: 1}
+  showCodeSyntaxHighlighting: 1
